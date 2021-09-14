@@ -1,0 +1,42 @@
+//breakpoints
+// 600px
+// 900px
+// 1200px
+// 1800px
+
+@mixin breakpoint($min: 0, $max: 0) {
+  $type: type-of($min);
+  @if $type == string {
+    @if $min == mobile {
+      @media (max-width: 37.5rem) {
+        @content;
+      }
+    } @else if $min == tab-port {
+      @media (max-width: 56.25em) {
+        @content;
+      }
+    } @else if $min == tab-land {
+      @media (max-width: 75em) {
+        @content;
+      }
+    } @else if $min == desktop {
+      @media (max-width: 112.5em) {
+        @content;
+      }
+    } @else {
+      @warn "Breakpoint mixin supports: mobile, phablet, tablet, laptop, desktop.";
+    }
+  } @else if $type == number {
+    $query: 'all' !default;
+    @if $min != 0 and $max != 0 {
+      $query: '(min-width: #{$min}) and (max-width: #{$max})';
+    } @else if $min != 0 and $max == 0 {
+      $query: '(max-width: #{$min})';
+    } @else if $min == 0 and $max != 0 {
+      $query: '(max-width: #{$max})';
+    }
+    @media #{$query} {
+      @content;
+    }
+  }
+}

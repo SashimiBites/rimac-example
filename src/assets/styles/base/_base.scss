@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+}
+
+html {
+  //10 px
+  font-size: 62.5%;
+
+  // @include respond(tab-land) {
+  //     font-size: 56.52%;
+  // }
+
+  // @include respond(tab-port) {
+  //     font-size: 50%;
+  // }
+
+  // @include breakpoint(desktop) {
+  //     font-size: 50%;
+  // }
+}
