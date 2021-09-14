@@ -1,0 +1,27 @@
+.btn-gen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 19.2rem;
+  min-height: 5.6rem;
+  border: none;
+  border-radius: 8px;
+  background-color: transparent;
+  cursor: pointer;
+
+  text-transform: uppercase;
+  color: map-get($colors, 'white');
+  font-family: $font_lato;
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+
+  &--red {
+    background-color: map-get($colors, 'red');
+  }
+
+  .chevrot {
+    margin-left: 1.5rem;
+  }
+}
