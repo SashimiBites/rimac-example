@@ -1,0 +1,40 @@
+.progress-line {
+  flex: 1;
+  display: none;
+  align-items: center;
+
+  @include breakpoint(mobile) {
+    display: flex;
+  }
+
+  &__text {
+    font-family: $font_lato;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-weight: 700;
+    color: map-get($colors, 'gray-medium');
+    margin-right: 1.2rem;
+  }
+
+  &__back {
+    flex: 1;
+    display: flex;
+    border-radius: 2rem;
+    background-color: map-get($colors, 'gray-line');
+    height: 6px;
+    position: relative;
+  }
+
+  &__progress {
+    flex: 1;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background-color: map-get($colors, 'cian');
+    z-index: 5;
+    height: 6px;
+    width: 50%;
+    border-radius: 2rem;
+  }
+}

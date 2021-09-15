@@ -71,7 +71,7 @@ const LoginPage = () => {
             }));
 
             //if successful redirect to next page
-            history.replace('/datos');
+            history.replace('/planes');
         }
     });
 

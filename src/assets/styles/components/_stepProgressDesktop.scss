@@ -1,0 +1,70 @@
+.progress {
+  position: relative;
+  padding-left: 45px;
+  list-style: none;
+  counter-reset: progress;
+
+  @include breakpoint(mobile) {
+    display: none;
+  }
+
+  &::before {
+    display: inline-block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15px;
+    width: 10px;
+    height: 100%;
+    border-left: 2px dashed #ccc;
+  }
+
+  &__item {
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    color: map-get($colors, 'gray-light');
+    position: relative;
+    counter-increment: progress;
+
+    &.complete {
+      color: map-get($colors, 'gray');
+    }
+
+    &.complete::after {
+      background-color: map-get($colors, 'cian');
+      color: map-get($colors, 'white');
+      border: 2px solid map-get($colors, 'cian');
+    }
+  }
+
+  &__item:not(:last-child) {
+    padding-top: 5px;
+    padding-bottom: 45px;
+  }
+
+  &__item::before {
+    display: inline-block;
+    content: '';
+    position: absolute;
+    left: -30px;
+    height: 100%;
+    width: 10px;
+  }
+
+  &__item::after {
+    content: '';
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: -45px;
+    width: 25px;
+    height: 25px;
+    border: 2px solid map-get($colors, 'gray-light');
+    border-radius: 50%;
+    background-color: map-get($colors, 'gray-banner');
+    content: counters(progress, '.') ' ';
+    color: map-get($colors, 'gray-light');
+  }
+}

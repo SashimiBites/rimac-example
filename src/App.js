@@ -4,7 +4,9 @@ import { useSelector } from "react-redux";
 
 import LoginPage from "./pages/LoginPage/LoginPage";
 import Layout from "./components/Layout/Layout";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
+const PlanPage = React.lazy(() => import('./pages/PlanesPage/PlanesPage'));
 
 function App() {
   const userInfo = useSelector(state => state.user.personalInfo);
@@ -14,6 +16,7 @@ function App() {
       <Suspense
         fallback={<div className="base-loading">Cargando...</div>}>
         <Switch>
+          <ProtectedRoute path="/planes" component={PlanPage} completed={true}/>
           <Route path="/" exact>
             <LoginPage />
           </Route>
