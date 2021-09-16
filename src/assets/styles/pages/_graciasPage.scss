@@ -1,0 +1,131 @@
+.gracias-page-cont {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 6.5rem;
+  overflow-x: hidden;
+
+  .wrapper {
+    display: flex;
+    width: 136rem;
+    max-width: 100%;
+
+    @include breakpoint(mobile) {
+      flex-direction: column;
+    }
+  }
+
+  .banner {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5rem;
+    position: relative;
+    background-color: map-get($colors, 'gray-banner');
+
+    @include breakpoint(mobile) {
+      flex-direction: row;
+      width: 100%;
+      background-color: map-get($colors, 'white');
+      border-bottom: 1px solid map-get($colors, 'gray-line');
+      padding: 0;
+    }
+
+    picture {
+      width: 100%;
+    }
+
+    &__img {
+      position: absolute;
+      display: flex;
+      top: 9rem;
+      right: -9.5rem;
+      width: 75%;
+
+      @include breakpoint(1200px) {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      @include breakpoint(mobile) {
+        position: relative;
+        top: 0;
+        width: 100%;
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 9rem;
+    padding-left: 9rem;
+    padding-right: 0;
+
+    @include breakpoint(1200px) {
+      padding-left: 3rem;
+    }
+    @include breakpoint(mobile) {
+      margin-bottom: 6rem;
+      padding-right: 3rem;
+      padding-top: 4rem;
+      justify-content: center;
+    }
+
+    .gracias {
+      display: flex;
+      flex-direction: column;
+      width: 48rem;
+      max-width: 100%;
+
+      &__subtitle {
+        font-family: $font_lato;
+        font-size: 3.6rem;
+        line-height: 4.8rem;
+        color: map-get($colors, 'red');
+
+        @include breakpoint(mobile) {
+          font-size: 2.8rem;
+          line-height: 3.6rem;
+        }
+      }
+
+      &__title {
+        font-family: $font_lato;
+        font-size: 3.6rem;
+        line-height: 4.8rem;
+        color: map-get($colors, 'gray');
+
+        @include breakpoint(mobile) {
+          font-size: 2.8rem;
+          line-height: 3.6rem;
+        }
+      }
+
+      &__text {
+        font-size: 1.6rem;
+        line-height: 2.8rem;
+        color: map-get($colors, 'gray-light');
+      }
+
+      &__email {
+        font-weight: 400;
+        font-size: 1.6rem;
+        line-height: 2.8rem;
+        color: map-get($colors, 'gray-medium');
+      }
+
+      .btn-como {
+        text-decoration: none;
+        min-width: 25.5rem;
+
+        @include breakpoint(mobile) {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

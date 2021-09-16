@@ -8,16 +8,22 @@ import Layout from "./components/Layout/Layout";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 const PlanPage = React.lazy(() => import('./pages/PlanesPage/PlanesPage'));
+const GraciasPage = React.lazy(() => import('./pages/GraciasPage/GraciasPage'));
 
 function App() {
   const userInfo = useSelector(state => state.user.personalInfo);
+  const planInfo = useSelector(state => state.plan.totalSum);
+
+  const isStepOneFinished = (userInfo !== null);
+  const isStepTwoFinished = (isStepOneFinished && (planInfo !== null));
 
   return (
     <Layout>
       <Suspense
         fallback={<div className="base-loading">Cargando...</div>}>
         <Switch>
-          <ProtectedRoute path="/planes" component={PlanPage} completed={true}/>
+          <ProtectedRoute path="/planes" component={PlanPage} completed={isStepOneFinished}/>
+          <ProtectedRoute path="/gracias" component={GraciasPage} completed={isStepTwoFinished}/>
           <Route path="/" exact>
             <LoginPage />
           </Route>

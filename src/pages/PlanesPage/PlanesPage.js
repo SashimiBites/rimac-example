@@ -136,6 +136,7 @@ const PlanPage = () => {
         }));
 
         // go to last page
+        history.replace('/gracias');
     }
 
     return (

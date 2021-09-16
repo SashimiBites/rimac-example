@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 
 const Navigation = () => {
     const [colorChange, setColorChange] = useState(false);
+    const [navbarClass, setNavbarClass] = useState('navbar home');
     const history = useHistory();
     const isHome = history.location.pathname === '/';
-    let navbarClass = 'navbar';
 
     const changeNavBackground = useCallback(() => {
         if(window.scrollY !== 0) {
@@ -14,10 +14,6 @@ const Navigation = () => {
             setColorChange(false);
         }
     }, []);
-
-    if(isHome) {
-        navbarClass = 'navbar home';
-    } 
 
     useEffect(() => {
         if(isHome) {
@@ -30,8 +26,13 @@ const Navigation = () => {
     }, [isHome, changeNavBackground]);
 
     history.listen((location) => {
-        if(location.pathname === '/') window.addEventListener('scroll', changeNavBackground);
-        else window.removeEventListener('scroll', changeNavBackground);
+        if(location.pathname === '/') {
+            window.addEventListener('scroll', changeNavBackground);
+            setNavbarClass('navbar home');
+        } else {
+            window.removeEventListener('scroll', changeNavBackground);
+            setNavbarClass('navbar');
+        }
     });
 
     return (
