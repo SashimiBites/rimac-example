@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -6,6 +6,7 @@ import planes from './planes';
 import StepProgressDesktop from "../../components/StepProgress/StepProgressDesktop";
 import StepProgressMobile from "../../components/StepProgress/StepProgressMobile";
 import PlanAccor from "../../components/PlanAccor/PlanAccor";
+import { planActions } from "../../store/plan/plan-slice";
 
 const MONTO_BASE = 20;
 const appSteps = [
@@ -17,10 +18,31 @@ const carInfo = {
     carYear: '2019'
 };
 
+// PRICE CONSTANT
+const MIN_AMOUNT = 12500; 
+const MAX_AMOUNT = 16500;
+const AMOUNT_TO_CHANGE = 12600;
+const INCREMENT_AMOUNT = 100;
+
+const usePriceCounter = (initialAmount) => {
+    const [sum, setSum] = useState(initialAmount);
+
+    const incrementSum = () => {
+        sum + INCREMENT_AMOUNT > MAX_AMOUNT ? setSum(sum) : setSum(sum + INCREMENT_AMOUNT);
+    };
+
+    const decrementSum = () => {
+        sum - INCREMENT_AMOUNT < MIN_AMOUNT ? setSum(sum) : setSum(sum - INCREMENT_AMOUNT);
+    };
+
+    return { sum, incrementSum, decrementSum };
+};
+
 const PlanPage = () => {
     const history = useHistory();
     const dispatch = useDispatch();
     const plate = useSelector(state => state.user.plate);
+    const { sum, incrementSum, decrementSum } = usePriceCounter(MIN_AMOUNT); 
 
     const cPlansArray = [];
     const cAllPlans = [];
@@ -43,8 +65,7 @@ const PlanPage = () => {
     const [plansArray, setPlansArray] = useState(cPlansArray);
     const [allPlans, setAllPlans] = useState(cAllPlans);
     const [currentPlanId, setCurrentPlanId] = useState(cPlansArray[0].id);
-    const [montoTotal, setMontoTotal] = useState(MONTO_BASE);
-    const [currentOptions, setCurrentOptions] = useState([]);
+    const [montoTotal, setMontoTotal] = useState(0);
 
     const clickPlanHandle = (id) => {
         const cPlan = plansArray.find(el => el.id === id);
@@ -56,20 +77,66 @@ const PlanPage = () => {
         setPlansArray([...plansArray]);
     };
 
-    const addPlanOptionHandle = (id) => {
+    const addOrRemovePlanOptionHandle = (id) => {
         const option = allPlans.find(el => el.id === id);
         option.added === false ? setMontoTotal(montoTotal + option.cost) : setMontoTotal(montoTotal - option.cost);
-        option.added = !option.added;
+        
+        const newAllPlans = [...allPlans];
+        const index = allPlans.findIndex(el => el.id === id);
+        newAllPlans[index].added = !newAllPlans[index].added;
 
-        if(option.added) {
-            currentOptions.push(option.id);
-        } else {
-            const index = currentOptions.indexOf(option.id);
-            currentOptions.splice(index, 1);
-        }
-
-        setCurrentOptions([...currentOptions]);
+        setAllPlans(newAllPlans);
     };
+
+    const updateCost = () => {
+        const acceptedPlans = allPlans.filter(el => el.added);
+        const accum = acceptedPlans.length === 0 ? 0 : acceptedPlans.map(el => el.cost).reduce((el, acc) => acc += el);
+        setMontoTotal(accum + MONTO_BASE);
+    };
+
+    useEffect(() => {
+        updateCost();
+    }, []);
+
+    useEffect(() => {
+        const hidePlanOption = (hide, id) => {
+            const newAllPlans = [...allPlans];
+            const index = allPlans.findIndex(el => el.id === id);
+            
+            if(hide) {
+                newAllPlans[index].hide = true;
+                if(newAllPlans[index].added) newAllPlans[index].added = false;
+            } else {
+                newAllPlans[index].hide = false;
+                if(!newAllPlans[index].added) newAllPlans[index].added = true;
+            }
+    
+            setAllPlans(newAllPlans);
+            updateCost();
+        };
+
+        if(sum > AMOUNT_TO_CHANGE && !allPlans[1].hide) {
+            hidePlanOption(true, allPlans[1].id);
+        } else if(sum <= AMOUNT_TO_CHANGE && allPlans[1].hide) {
+            hidePlanOption(false, allPlans[1].id);
+        }
+    }, [allPlans, sum]);
+
+    const goToLastPageHandle = () => {
+        // dispatch action to plan store
+        const currentOptions = allPlans.filter(el => el.added);
+        dispatch(planActions.createPlans({
+            plans: currentOptions
+        }));
+        dispatch(planActions.addTotalSum({
+            totalSum: montoTotal
+        }));
+        dispatch(planActions.addCarSum({
+            carSum: sum
+        }));
+
+        // go to last page
+    }
 
     return (
         <div className="planes-page-cont">
@@ -132,12 +199,12 @@ const PlanPage = () => {
                             <div className="counter__count">
                                 <button
                                     type="button" 
-                                    onClick={() => {}}
+                                    onClick={decrementSum}
                                     className="counter__count-btn">-</button>
-                                <p className="counter__number">{'$ ' + 2000}</p>
+                                <p className="counter__number">{'$ ' + sum}</p>
                                 <button 
                                     type="button" 
-                                    onClick={() => {}}
+                                    onClick={incrementSum}
                                     className="counter__count-btn">+</button> 
                             </div>
                         </div>
@@ -170,7 +237,8 @@ const PlanPage = () => {
                             <div className="plans__bot">
                                 {
                                     allPlans.filter(el => el.parentId === currentPlanId).map((el, key) => {
-                                        return (
+                                        return !el.hide ?
+                                        (
                                             <PlanAccor 
                                                 key={'planOpt-' + key}
                                                 id={el.id}
@@ -179,9 +247,9 @@ const PlanPage = () => {
                                                 title={el.title}
                                                 added={el.added}
                                                 description={el.description}
-                                                clickPlanHandle={addPlanOptionHandle}
+                                                clickPlanHandle={addOrRemovePlanOptionHandle}
                                             />
-                                        );
+                                        ) : null;
                                     })
                                 }
                             </div>
@@ -221,6 +289,7 @@ const PlanPage = () => {
                                     </li>
                                 </ul>
                                 <button 
+                                    onClick={goToLastPageHandle}
                                     className="checkout__last-btn btn-gen btn-gen--red">
                                     LO QUIERO
                                 </button>
